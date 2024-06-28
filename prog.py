@@ -24,7 +24,10 @@ def submit():
         print(f"Failed to get map info for {bsr}. Status code: {r.status_code}")
 
     # Print the map name
-    print(f"{mapName} {songAuthorName} {levelAuthorName}")
+    print()
+    print(f"{mapName} by {songAuthorName}")
+    print(f"Mapped by {levelAuthorName}")
+    print(f"https://beatsaver.com/maps/{bsr}")
 
     # Wait 10 seconds before closing
     time.sleep(10)
