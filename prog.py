@@ -16,12 +16,15 @@ def submit():
 
     if r.status_code == 200:
         data = r.json()
-        mapName = data['name']
+        mapName = data['metadata']['songName']
+        songAuthorName = data['metadata']['songAuthorName']
+        levelAuthorName = data['metadata']['levelAuthorName']
+
     else:
         print(f"Failed to get map info for {bsr}. Status code: {r.status_code}")
 
     # Print the map name
-    print(mapName)
+    print(f"{mapName} {songAuthorName} {levelAuthorName}")
 
     # Wait 10 seconds before closing
     time.sleep(10)
