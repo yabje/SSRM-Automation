@@ -21,13 +21,20 @@ def submit():
         songAuthorName = data['metadata']['songAuthorName']
         levelAuthorName = data['metadata']['levelAuthorName']
 
-        # Update the text box with the fetched data
-        result_text.config(state=NORMAL)
-        result_text.delete(1.0, END)  # Clear previous content
-        result_text.insert(END, f"{mapName} by {songAuthorName}\n")
-        result_text.insert(END, f"Mapped by {levelAuthorName}\n")
-        result_text.insert(END, f"https://beatsaver.com/maps/{bsr}\n")
-        result_text.config(state=DISABLED)  # Make text box read-only
+        # Update the title text box with the fetched data
+        title_text.config(state=NORMAL)
+        title_text.delete(1.0, END)  # Clear previous content
+        title_text.insert(END, f"{mapName} | {songAuthorName} | {levelAuthorName} | Ex+\n")
+        title_text.config(state=DISABLED)  # Make text box read-only
+
+        # Update the description text box with the fetched data
+        description_text.config(state=NORMAL)
+        description_text.delete(1.0, END)  # Clear previous content
+        description_text.insert(END, f"{mapName} by {songAuthorName}\n")
+        description_text.insert(END, f"Mapped by {levelAuthorName}\n")
+        description_text.insert(END, f"https://beatsaver.com/maps/{bsr}\n")
+        description_text.config(state=DISABLED)  # Make text box read-only
+
     else:
         print(f"Failed to get map info for {bsr}. Status code: {r.status_code}")
 
@@ -52,10 +59,15 @@ mapKey_entry.pack(pady=10)
 submit_button = ttk.Button(root, text="Submit", command=submit)
 submit_button.pack(pady=10)
 
-# Create and pack the text widget to display fetched data
-result_text = Text(root, height=10, wrap=WORD)
-result_text.pack(pady=10, fill=BOTH, expand=True)
-result_text.config(state=DISABLED)  # Make text box read-only
+# Create and pack the text widget to display the title
+title_text = Text(root, height=2, wrap=WORD)
+title_text.pack(pady=10, fill=BOTH, expand=True)
+title_text.config(state=DISABLED)  # Make text box read-only
+
+# Create and pack the text widget to display the description
+description_text = Text(root, height=5, wrap=WORD)
+description_text.pack(pady=10, fill=BOTH, expand=True)
+description_text.config(state=DISABLED)  # Make text box read-only
 
 # Bind the window close event to the on_closing function
 root.protocol("WM_DELETE_WINDOW", on_closing)
