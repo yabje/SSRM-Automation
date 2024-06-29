@@ -32,7 +32,7 @@ def submit():
         description_text.delete(1.0, END)  # Clear previous content
         description_text.insert(END, f"{mapName} by {songAuthorName}\n")
         description_text.insert(END, f"Mapped by {levelAuthorName}\n")
-        description_text.insert(END, f"https://beatsaver.com/maps/{bsr}\n")
+        description_text.insert(END, f"https://beatsaver.com/maps/{bsr}\n\n")
         description_text.insert(END, f"Gameplay by: Mr_bjo")
         description_text.config(state=DISABLED)  # Make text box read-only
 
@@ -69,11 +69,19 @@ root = Tk()
 root.title("SSRM Automator")
 root.geometry('600x400')
 
+# Set Lato font
+font_style = ("Lato", 11)
+headerFont_style = ("Lato Black", 14)
+
+# Create a style object
+style = ttk.Style()
+style.configure('TButton', font=font_style)  # Apply the Lato font to all TButtons
+
 # Create and pack the label and entry widgets for map key input
-mapKey_label = ttk.Label(root, text="Map key:")
+mapKey_label = ttk.Label(root, text="Map key:", font=headerFont_style)
 mapKey_label.pack(pady=10)
 
-mapKey_entry = ttk.Entry(root)
+mapKey_entry = ttk.Entry(root, font=font_style)
 mapKey_entry.pack(pady=10)
 
 # Bind the Enter key press events to submit the map key
@@ -85,7 +93,10 @@ submit_button = ttk.Button(root, text="Submit", command=submit)
 submit_button.pack(pady=10)
 
 # Create and pack the text widget to display the title
-title_text = Text(root, height=1, wrap=WORD)
+title_label = ttk.Label(root, text="Title:", font=headerFont_style)
+title_label.pack()
+
+title_text = Text(root, height=1, wrap=WORD, font=font_style)
 title_text.pack(pady=10, fill=BOTH, expand=True)
 title_text.config(state=DISABLED)  # Make text box read-only
 
@@ -100,11 +111,14 @@ copy_title_button = Label(root, image=copy_image, cursor="hand2")
 copy_title_button.place(x=560, y=80)  # Initial position; will be adjusted
 
 # Create a spacer frame
-spacer = Frame(root, height=40)  # Spacer with height 40 pixels
+spacer = Frame(root, height=20)  # Spacer with height 40 pixels
 spacer.pack(fill=X)
 
 # Create and pack the text widget to display the description
-description_text = Text(root, height=5, wrap=WORD)
+description_label = ttk.Label(root, text="Description:", font=headerFont_style)
+description_label.pack()
+
+description_text = Text(root, height=5, wrap=WORD, font=font_style)
 description_text.pack(pady=10, fill=BOTH, expand=True)
 description_text.config(state=DISABLED)  # Make text box read-only
 
