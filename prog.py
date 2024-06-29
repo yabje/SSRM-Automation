@@ -33,6 +33,7 @@ def submit():
         description_text.insert(END, f"{mapName} by {songAuthorName}\n")
         description_text.insert(END, f"Mapped by {levelAuthorName}\n")
         description_text.insert(END, f"https://beatsaver.com/maps/{bsr}\n")
+        description_text.insert(END, f"Gameplay by: Mr_bjo")
         description_text.config(state=DISABLED)  # Make text box read-only
 
     else:
