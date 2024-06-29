@@ -100,13 +100,8 @@ title_text = Text(root, height=1, wrap=WORD, font=font_style)
 title_text.pack(pady=10, fill=BOTH, expand=True)
 title_text.config(state=DISABLED)  # Make text box read-only
 
-# Load the copy image
-copy_image = Image.open("Images/copy-icon.png")
-copy_image = copy_image.resize((18, 18), Image.LANCZOS)  # Resizer
-copy_image = ImageTk.PhotoImage(copy_image)
-
 # Create and place the copy image button for title
-copy_title_button = Label(root, image=copy_image, cursor="hand2")
+copy_title_button = Button(root, text="Copy", cursor="hand2", command=copy_title)
 copy_title_button.place(x=560, y=80)  # Initial position; will be adjusted
 
 # Create a spacer frame
@@ -122,15 +117,11 @@ description_text.pack(pady=10, fill=BOTH, expand=True)
 description_text.config(state=DISABLED)  # Make text box read-only
 
 # Create and place the copy image button for description
-copy_description_button = Label(root, image=copy_image, cursor="hand2")
+copy_description_button = Button(root, text="Copy", cursor="hand2", command=copy_description)
 copy_description_button.place(x=560, y=210)  # Initial position; will be adjusted
 
 # Bind the window resize event to adjust the position of the copy buttons
 root.bind('<Configure>', adjust_copy_button_positions)
-
-# Bind the copy buttons to their respective functions
-copy_title_button.bind("<Button-1>", copy_title)
-copy_description_button.bind("<Button-1>", copy_description)
 
 # Bind the window close event to the on_closing function
 root.protocol("WM_DELETE_WINDOW", on_closing)
