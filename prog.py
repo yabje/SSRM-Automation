@@ -1,7 +1,6 @@
 import requests
 from tkinter import *
 from tkinter import ttk
-from PIL import Image, ImageTk
 
 # Function to handle the submit button click event
 def submit():
