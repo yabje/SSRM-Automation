@@ -101,8 +101,7 @@ title_text.pack(pady=10, fill=BOTH, expand=True)
 title_text.config(state=DISABLED)  # Make text box read-only
 
 # Load the copy image
-copy_image_path = "Images/copy-icon.png"
-copy_image = Image.open(copy_image_path)
+copy_image = Image.open("Images/copy-icon.png")
 copy_image = copy_image.resize((18, 18), Image.LANCZOS)  # Resizer
 copy_image = ImageTk.PhotoImage(copy_image)
 
