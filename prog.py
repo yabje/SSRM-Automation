@@ -1,7 +1,7 @@
-import time
 import requests
 from tkinter import *
 from tkinter import ttk
+from PIL import Image, ImageTk
 
 # Function to handle the submit button click event
 def submit():
@@ -24,7 +24,7 @@ def submit():
         # Update the title text box with the fetched data
         title_text.config(state=NORMAL)
         title_text.delete(1.0, END)  # Clear previous content
-        title_text.insert(END, f"{mapName} | {songAuthorName} | {levelAuthorName} | Ex+\n")
+        title_text.insert(END, f"{mapName} | {songAuthorName} | {levelAuthorName} | Ex+")
         title_text.config(state=DISABLED)  # Make text box read-only
 
         # Update the description text box with the fetched data
@@ -38,10 +38,28 @@ def submit():
     else:
         print(f"Failed to get map info for {bsr}. Status code: {r.status_code}")
 
+# Function to copy title text to clipboard
+def copy_title(event=None):
+    root.clipboard_clear()
+    root.clipboard_append(title_text.get(1.0, END).strip())
+    print("Title copied to clipboard")
+
+# Function to copy description text to clipboard
+def copy_description(event=None):
+    root.clipboard_clear()
+    root.clipboard_append(description_text.get(1.0, END).strip())
+    print("Description copied to clipboard")
+
 # Function to handle the window close event
 def on_closing():
     print("Program closed.")
     root.destroy()
+
+# Function to adjust the position of the copy buttons
+def adjust_copy_button_positions(event):
+    x_pos = root.winfo_width() - 40  # 10 pixels from the right edge, considering the button width
+    copy_title_button.place(x=x_pos, y=110)  # Adjust y position as necessary
+    copy_description_button.place(x=x_pos, y=240)  # Adjust y position as necessary
 
 # Create the main window
 root = Tk()
@@ -64,10 +82,31 @@ title_text = Text(root, height=2, wrap=WORD)
 title_text.pack(pady=10, fill=BOTH, expand=True)
 title_text.config(state=DISABLED)  # Make text box read-only
 
+# Load the copy image
+copy_image_path = "Images/copy-icon.png"
+copy_image = Image.open(copy_image_path)
+copy_image = copy_image.resize((18, 18), Image.Resampling.LANCZOS)  # Resize if necessary
+copy_image = ImageTk.PhotoImage(copy_image)
+
+# Create and place the copy image button for title
+copy_title_button = Label(root, image=copy_image, cursor="hand2")
+copy_title_button.place(x=560, y=110)  # Initial position; will be adjusted
+
 # Create and pack the text widget to display the description
 description_text = Text(root, height=5, wrap=WORD)
 description_text.pack(pady=10, fill=BOTH, expand=True)
 description_text.config(state=DISABLED)  # Make text box read-only
+
+# Create and place the copy image button for description
+copy_description_button = Label(root, image=copy_image, cursor="hand2")
+copy_description_button.place(x=560, y=240)  # Initial position; will be adjusted
+
+# Bind the window resize event to adjust the position of the copy buttons
+root.bind('<Configure>', adjust_copy_button_positions)
+
+# Bind the copy buttons to their respective functions
+copy_title_button.bind("<Button-1>", copy_title)
+copy_description_button.bind("<Button-1>", copy_description)
 
 # Bind the window close event to the on_closing function
 root.protocol("WM_DELETE_WINDOW", on_closing)
