@@ -1,12 +1,14 @@
 import requests
 from tkinter import *
 from tkinter import ttk, filedialog, messagebox
-import shutil
+from PIL import Image, ImageTk
+from io import BytesIO
 
 # Function to handle the submit button click event
 def submit():
     global bsr
     bsr = str(mapKey_entry.get())  # Get the map key from the entry widget
+    global overlayImageUrl
 
     # Print the map key to confirm it has been stored correctly
     print(f"The entered map key is: {bsr}")
@@ -20,6 +22,7 @@ def submit():
         mapName = data['metadata']['songName']
         songAuthorName = data['metadata']['songAuthorName']
         levelAuthorName = data['metadata']['levelAuthorName']
+        overlayImageUrl = data['versions'][0]['coverURL']
 
         # Update the title text box with the fetched data
         title_text.config(state=NORMAL)
@@ -66,23 +69,40 @@ def adjust_copy_button_positions(event):
 
 # Function to open a file dialog and select an image from the PC
 def select_image():
-    global image_path
-    image_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.png *.jpeg")])
-    if image_path:
-        print(f"Selected image: {image_path}")
+    global selected_image_path
+    selected_image_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.png *.jpeg")])
+    if selected_image_path:
+        print(f"Selected image: {selected_image_path}")
 
-# Function to download the selected image to a new location
-def save_image():
-    if not image_path:
+# Function to overlay the URL image onto the selected image and save the result
+def overlay_and_save_image():
+    if not selected_image_path:
         messagebox.showerror("Error", "Please select an image first.")
         return
+    
     try:
-        file_path = filedialog.asksaveasfilename(defaultextension=".jpg", filetypes=[("Image files", "*.jpg *.png *.jpeg")])
+        # Load the selected image
+        selected_image = Image.open(selected_image_path).convert('RGBA')
+
+        # Download and load the overlay image
+        response = requests.get(overlayImageUrl)
+        overlay_image = Image.open(BytesIO(response.content)).convert('RGBA')
+
+        # Resize overlay image to 50x50 pixels
+        overlay_image = overlay_image.resize((50, 50), Image.ANTIALIAS)
+
+        # Create a new image with an alpha channel for transparency
+        combined_image = Image.new('RGBA', selected_image.size)
+        combined_image.paste(selected_image, (0, 0))
+        combined_image.paste(overlay_image, (0, 0), overlay_image)
+
+        # Save the combined image
+        file_path = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("Image files", "*.jpg *.png *.jpeg")])
         if file_path:
-            shutil.copy(image_path, file_path)
-            print(f"Image saved as: {file_path}")
+            combined_image.save(file_path)
+            print(f"Combined image saved as: {file_path}")
     except Exception as e:
-        messagebox.showerror("Error", f"Failed to save image: {e}")
+        messagebox.showerror("Error", f"Failed to overlay and save image: {e}")
 
 # Create the main window
 root = Tk()
@@ -144,9 +164,9 @@ copy_description_button.place(x=560, y=210)  # Initial position; will be adjuste
 select_image_button = ttk.Button(root, text="Select Image", command=select_image)
 select_image_button.pack(pady=10)
 
-# Create and pack the save image button
-save_image_button = ttk.Button(root, text="Save Image", command=save_image)
-save_image_button.pack(pady=10)
+# Create and pack the overlay and save image button
+overlay_save_image_button = ttk.Button(root, text="Overlay and Save Image", command=overlay_and_save_image)
+overlay_save_image_button.pack(pady=10)
 
 # Bind the window resize event to adjust the position of the copy buttons
 root.bind('<Configure>', adjust_copy_button_positions)
