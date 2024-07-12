@@ -1,6 +1,7 @@
 import requests
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, filedialog, messagebox
+import shutil
 
 # Function to handle the submit button click event
 def submit():
@@ -63,10 +64,30 @@ def adjust_copy_button_positions(event):
     copy_title_button.place(x=x_pos, y=title_button_y_pos)
     copy_description_button.place(x=x_pos, y=description_button_y_pos)
 
+# Function to open a file dialog and select an image from the PC
+def select_image():
+    global image_path
+    image_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.png *.jpeg")])
+    if image_path:
+        print(f"Selected image: {image_path}")
+
+# Function to download the selected image to a new location
+def save_image():
+    if not image_path:
+        messagebox.showerror("Error", "Please select an image first.")
+        return
+    try:
+        file_path = filedialog.asksaveasfilename(defaultextension=".jpg", filetypes=[("Image files", "*.jpg *.png *.jpeg")])
+        if file_path:
+            shutil.copy(image_path, file_path)
+            print(f"Image saved as: {file_path}")
+    except Exception as e:
+        messagebox.showerror("Error", f"Failed to save image: {e}")
+
 # Create the main window
 root = Tk()
 root.title("SSRM Automator")
-root.geometry('600x400')
+root.geometry('600x500')
 
 # Set Lato font
 font_style = ("Lato", 11)
@@ -118,6 +139,14 @@ description_text.config(state=DISABLED)  # Make text box read-only
 # Create and place the copy image button for description
 copy_description_button = Button(root, text="Copy", cursor="hand2", command=copy_description)
 copy_description_button.place(x=560, y=210)  # Initial position; will be adjusted
+
+# Create and pack the select image button
+select_image_button = ttk.Button(root, text="Select Image", command=select_image)
+select_image_button.pack(pady=10)
+
+# Create and pack the save image button
+save_image_button = ttk.Button(root, text="Save Image", command=save_image)
+save_image_button.pack(pady=10)
 
 # Bind the window resize event to adjust the position of the copy buttons
 root.bind('<Configure>', adjust_copy_button_positions)
